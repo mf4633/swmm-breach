@@ -9,7 +9,7 @@ tags:
   - uncertainty quantification
 authors:
   - name: Michael B. Flynn
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0004-2410-7950
     affiliation: 1
 affiliations:
   - name: Independent researcher, Asheville, NC, USA
