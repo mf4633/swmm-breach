@@ -95,23 +95,59 @@ comparing breach formulations on standard benchmark cases.
 
 # Validation
 
+`swmm-breach` is validated against two independent reference cases
+that span almost four orders of magnitude in reservoir volume.
+
+## Teton Dam (1976), 308,000,000 m^3
+
 The deterministic Froehlich (2008) implementation reproduces the
-canonical Teton Dam failure (1976) [@wahl2004] to within the 25 %
-accuracy typical of empirical breach regressions: predicted average
-bottom width 168 m vs. observed 151 m; predicted formation time 1.13
-hr vs. observed 1.25 hr.
+canonical Teton Dam failure [@wahl2004] to within the 25 % accuracy
+typical of empirical breach regressions: predicted average bottom
+width 168 m vs. observed 151 m; predicted formation time 1.13 hr vs.
+observed 1.25 hr.
 
 A 2,000-realization probabilistic ensemble of the same Teton scenario
 brackets the historically reported peak discharge of approximately
 50,000-80,000 m$^3$/s within its 5-95 percentile envelope (5th
 percentile 62,800 m$^3$/s, 95th percentile 183,000 m$^3$/s). The
-deterministic point-estimate routing yields a peak of 119,000 m$^3$/s,
-illustrating concretely the @wahl2004 finding that single-value
-breach predictions are systematically misleading: the deterministic
-estimate lies $\sim$80 % above the observed peak, while the
-probabilistic 5th percentile lands within the historically reported
-range. This Teton bracketing test is included in the package's
-automated test suite as a regression check.
+deterministic point-estimate routing yields a peak of 119,000 m$^3$/s
+-- approximately 80 % above the observed peak -- illustrating
+concretely the @wahl2004 finding that single-value breach predictions
+are systematically misleading at large reservoir scale.
+
+## Anson County WTP Lower Lagoon (ANSON-057), 78,940 m^3
+
+A second case study compares against an independent HEC-RAS 6.6 2D
+unsteady-flow analysis performed for a Class C to Class A hazard
+reclassification submittal to the North Carolina Dam Safety Program
+(April 2026). The Lower Lagoon is an HDPE-lined earthen embankment
+(structural height 7.62 m, normal pool volume 78,940 m$^3$);
+parameters were extracted from the 2023 post-rehabilitation as-built
+survey.
+
+For the Lower-piping-at-normal-pool scenario, the HEC-RAS reference
+peak breach outflow is 121.8 m$^3$/s (4,301 cfs). `swmm-breach` returns:
+
+- Deterministic point estimate: 142.5 m$^3$/s (5,034 cfs), 17 % high
+- Probabilistic 5/50/95 percentiles: 77.0 / 140.5 / 219.5 m$^3$/s
+  (2,719 / 4,963 / 7,753 cfs)
+
+The HEC-RAS reference lies within the 5-95 percentile envelope; the
+ensemble median is within a factor of 1.15 of HEC-RAS, well inside
+the factor-of-two tolerance commonly used for breach-model agreement.
+
+## Across both cases
+
+Together the two cases demonstrate that the probabilistic ensemble
+brackets the reference peak across nearly four orders of magnitude in
+reservoir volume (8 $\times$ 10$^4$ to 3 $\times$ 10$^8$ m$^3$),
+while the deterministic accuracy is highly scale-dependent: a
+17 % deviation at lagoon scale where level-pool dynamics dominate
+versus an 80 % deviation at the Teton scale where headcut migration
+and dynamic side-slope evolution are first-order processes that the
+linear-growth model cannot resolve. Both bracketing tests are included
+in the automated test suite (`tests/test_uncertainty.py` and
+`tests/test_anson_case.py`) as regression checks.
 
 # Limitations
 
