@@ -120,10 +120,11 @@ are systematically misleading at large reservoir scale.
 A second case study compares against an independent HEC-RAS 6.6 2D
 unsteady-flow analysis performed for a Class C to Class A hazard
 reclassification submittal to the North Carolina Dam Safety Program
-(April 2026). The Lower Lagoon is an HDPE-lined earthen embankment
-(structural height 7.62 m, normal pool volume 78,940 m$^3$);
-parameters were extracted from the 2023 post-rehabilitation as-built
-survey.
+(April 2026; the submittal and underlying as-built survey are public
+records under N.C. Gen. Stat. § 132-1). The Lower Lagoon is an
+HDPE-lined earthen embankment (structural height 7.62 m, normal pool
+volume 78,940 m$^3$); parameters were extracted from the 2023
+post-rehabilitation as-built survey.
 
 For the Lower-piping-at-normal-pool scenario, the HEC-RAS reference
 peak breach outflow is 121.8 m$^3$/s (4,301 cfs). `swmm-breach` returns:
