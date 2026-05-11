@@ -192,4 +192,15 @@ The author thanks the EPA SWMM development team for maintaining the
 SWMM source code as open and public, which made the format-spec-
 driven implementation of the `.inp` and `.out` integration possible.
 
+# Funding and conflict of interest
+
+No external funding was received for the development of `swmm-breach`.
+The author is employed as a Professional Engineer at McGill Associates,
+PA, which prepared the public-record Anson County hazard reclassification
+submittal cited as a validation case in this paper. McGill Associates
+had no role in the design, development, or analysis of this software;
+`swmm-breach` was developed independently outside the author's
+employment. The Anson submittal and its underlying parameters are
+public records under N.C. Gen. Stat. § 132-1.
+
 # References
