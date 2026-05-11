@@ -12,9 +12,12 @@ import pytest
 
 from swmm_breach import FailureMode, StorageCurve, froehlich
 from swmm_breach.uncertainty import (
+    BreachModel,
     EnsembleHydrograph,
     FroehlichUncertainty,
+    default_models,
     ensemble_simulate,
+    ensemble_simulate_multi_model,
     sample_breach_parameters,
 )
 
@@ -141,6 +144,90 @@ def test_ensemble_membership_dimensions():
     assert ens.flows_m3s.shape[0] == 50
     assert ens.sampled_b_avg_m.shape == (50,)
     assert ens.sampled_t_f_s.shape == (50,)
+
+
+def test_multi_model_ensemble_uses_both_models():
+    """A 50/50 weight on the two-model default should produce realizations
+    drawn from each model in roughly that proportion."""
+    sc = teton_storage()
+    ens = ensemble_simulate_multi_model(
+        storage=sc,
+        crest_elevation_m=87.0,
+        initial_stage_m=87.0,
+        volume_m3=308e6,
+        height_m=86.9,
+        mode=FailureMode.PIPING,
+        n_samples=400,
+        dt_s=30.0,
+        duration_s=4 * 3600,
+        rng=np.random.default_rng(20260511),
+    )
+    assert ens.sampled_model_index is not None
+    counts = np.bincount(ens.sampled_model_index, minlength=2)
+    # Both models drawn at least 30% of the time
+    assert counts[0] / 400 > 0.30
+    assert counts[1] / 400 > 0.30
+
+
+def test_multi_model_ensemble_brackets_observed_teton_peak():
+    """The two-model envelope must still bracket Teton's observed peak.
+    This is the key reviewer-relevant claim."""
+    sc = teton_storage()
+    ens = ensemble_simulate_multi_model(
+        storage=sc,
+        crest_elevation_m=87.0,
+        initial_stage_m=87.0,
+        volume_m3=308e6,
+        height_m=86.9,
+        mode=FailureMode.PIPING,
+        n_samples=500,
+        dt_s=20.0,
+        duration_s=4 * 3600,
+        rng=np.random.default_rng(20260511),
+    )
+    p5, p95 = ens.peak_percentile(5), ens.peak_percentile(95)
+    assert p5 <= 80_000.0
+    assert p95 >= 50_000.0
+
+
+def test_multi_model_weights_can_skew_toward_one_model():
+    sc = teton_storage()
+    models = default_models()
+    models = [
+        BreachModel(**{**models[0].__dict__, "weight": 9.0}),
+        BreachModel(**{**models[1].__dict__, "weight": 1.0}),
+    ]
+    ens = ensemble_simulate_multi_model(
+        storage=sc,
+        crest_elevation_m=87.0,
+        initial_stage_m=87.0,
+        volume_m3=308e6,
+        height_m=86.9,
+        mode=FailureMode.PIPING,
+        n_samples=500,
+        models=models,
+        dt_s=30.0,
+        duration_s=3 * 3600,
+        rng=np.random.default_rng(0),
+    )
+    counts = np.bincount(ens.sampled_model_index, minlength=2)
+    # Model 0 should win ~90% with 9:1 weights
+    assert counts[0] / 500 > 0.80
+
+
+def test_multi_model_rejects_negative_weights():
+    sc = teton_storage()
+    bad = [
+        BreachModel(name="bad", b_avg_fn=lambda *a: 1.0,
+                    t_f_fn=lambda *a: 1.0, side_slope_fn=lambda m: 1.0,
+                    sigma_log_b_avg=0.1, sigma_log_t_f=0.1, weight=-1.0)
+    ]
+    with pytest.raises(ValueError, match="non-negative"):
+        ensemble_simulate_multi_model(
+            storage=sc, crest_elevation_m=87.0, initial_stage_m=87.0,
+            volume_m3=308e6, height_m=86.9, mode=FailureMode.PIPING,
+            n_samples=10, models=bad, rng=np.random.default_rng(0),
+        )
 
 
 def test_ensemble_with_zero_uncertainty_gives_constant_peak():

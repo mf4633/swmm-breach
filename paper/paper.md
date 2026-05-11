@@ -37,13 +37,16 @@ paste a `[TIMESERIES]` block into the `.inp` file.
 1. Reads a SWMM `.inp` file and extracts the storage curve and
    geometry of a named storage node;
 2. Predicts breach geometry (average bottom width and formation time)
-   using the @froehlich2008 regressions for piping and overtopping
-   failure modes;
+   using the @froehlich2008 or @froehlich1995 regressions for piping
+   and overtopping failure modes;
 3. Routes the developing breach through a level-pool reservoir model
    with a trapezoidal broad-crested-weir outflow;
 4. Quantifies prediction uncertainty by Monte Carlo sampling of the
    regressions' published log-normal residuals, after @wahl2004,
-   producing ensemble hydrographs with confidence envelopes;
+   producing ensemble hydrographs with confidence envelopes; samples
+   can be drawn from a single regression or a weighted mixture of
+   models, capturing both *parametric* (within-model) and *epistemic*
+   (between-model) uncertainty;
 5. Emits a paste-ready `[TIMESERIES]` and `[INFLOWS]` snippet for the
    downstream node, with automatic CFS/CMS unit conversion;
 6. Reads the SWMM binary `.out` file after re-running the model to
@@ -84,10 +87,13 @@ Python implementation of:
 1. End-to-end dam-breach workflow integration with EPA SWMM and PCSWMM
    (`.inp` storage-curve extraction $\rightarrow$ breach hydrograph
    $\rightarrow$ `.out` downstream response);
-2. Monte Carlo uncertainty propagation on @froehlich2008 breach
-   parameters using @wahl2004 standard errors of estimate, producing
-   ensemble hydrographs and confidence envelopes that can be fed
-   directly into SWMM as low/median/high boundary conditions.
+2. Monte Carlo uncertainty propagation on @froehlich2008 and
+   @froehlich1995 breach parameters using @wahl2004 log-normal
+   residuals;
+3. Multi-model ensemble averaging that samples across both parameter
+   and model uncertainty, producing ensemble hydrographs and
+   confidence envelopes that can be fed directly into SWMM as
+   low/median/high boundary conditions.
 
 Target users are dam-safety consulting engineers, regulatory
 reviewers at state dam-safety offices, and hydrology researchers
@@ -137,18 +143,38 @@ The HEC-RAS reference lies within the 5-95 percentile envelope; the
 ensemble median is within a factor of 1.15 of HEC-RAS, well inside
 the factor-of-two tolerance commonly used for breach-model agreement.
 
-## Across both cases
+## Lawn Lake Dam (1982), 798,500 m^3
 
-Together the two cases demonstrate that the probabilistic ensemble
+A third case fills the volume gap between Anson and Teton. The Lawn
+Lake earthen embankment in Rocky Mountain National Park, Colorado
+failed by piping on 15 July 1982; the failure is documented in the
+public USGS report by @jarrettcosta1986 and is one of the most-cited
+entries in @wahl2004's breach database (V_w = 798,500 m$^3$, h_b =
+6.4 m, observed peak ~510 m$^3$/s).
+
+A 2,000-realization multi-model ensemble (Froehlich 2008 + Froehlich
+1995, equal weights) returns 5/50/95 percentile peaks of
+202 / 344 / 539 m$^3$/s. The observed Jarrett & Costa peak (510 m$^3$/s)
+lies inside the envelope.
+
+## Across all three cases
+
+| Case        | Volume (m$^3$) | Reference peak (m$^3$/s) | Ensemble 5/50/95 (m$^3$/s) | In envelope |
+|-------------|---------------:|-------------------------:|----------------------------:|:-----------:|
+| Anson Lower |    7.9 $\times$ 10$^4$ | 122 (HEC-RAS 2D) | 77 / 141 / 220       | yes |
+| Lawn Lake   |    8.0 $\times$ 10$^5$ | 510 (Jarrett 1986) | 202 / 344 / 539    | yes |
+| Teton       |    3.1 $\times$ 10$^8$ | 50,000-80,000 (observed) | 62,800 / 117,000 / 183,000 | yes |
+
+Together the three cases demonstrate that the probabilistic ensemble
 brackets the reference peak across nearly four orders of magnitude in
-reservoir volume (8 $\times$ 10$^4$ to 3 $\times$ 10$^8$ m$^3$),
-while the deterministic accuracy is highly scale-dependent: a
-17 % deviation at lagoon scale where level-pool dynamics dominate
-versus an 80 % deviation at the Teton scale where headcut migration
-and dynamic side-slope evolution are first-order processes that the
-linear-growth model cannot resolve. Both bracketing tests are included
-in the automated test suite (`tests/test_uncertainty.py` and
-`tests/test_anson_case.py`) as regression checks.
+reservoir volume. Deterministic accuracy is scale-dependent: $\sim$17 %
+deviation at lagoon scale where level-pool dynamics dominate versus
+$\sim$80 % deviation at the Teton scale where headcut migration and
+dynamic side-slope evolution are first-order processes that the linear-
+growth model cannot resolve. All three bracketing tests are included
+in the automated test suite (`tests/test_uncertainty.py`,
+`tests/test_anson_case.py`, `tests/test_lawn_lake_case.py`) as
+regression checks.
 
 # Limitations
 

@@ -27,11 +27,11 @@ References
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from . import froehlich
+from . import froehlich, froehlich_1995
 from .breach import BreachGeometry, FailureMode
 from .hydrograph import simulate
 from .reservoir import StorageCurve
@@ -50,6 +50,61 @@ class FroehlichUncertainty:
     sigma_log_t_f: float = 0.1968
 
 
+@dataclass(frozen=True)
+class BreachModel:
+    """A breach parameter regression with its log-residual uncertainty.
+
+    Used by :func:`ensemble_simulate_multi_model` to draw realizations
+    from a mixture of competing models, capturing both within-model
+    parameter uncertainty (the ``sigma_log_*`` residuals) and the
+    epistemic uncertainty about which model is correct (mixture weights).
+
+    The two callables follow the signatures::
+
+        b_avg_fn(volume_m3, height_m, mode) -> float  # metres
+        t_f_fn(volume_m3, height_m, mode)   -> float  # seconds
+    """
+
+    name: str
+    b_avg_fn: Callable[[float, float, FailureMode], float]
+    t_f_fn: Callable[[float, float, FailureMode], float]
+    side_slope_fn: Callable[[FailureMode], float]
+    sigma_log_b_avg: float
+    sigma_log_t_f: float
+    weight: float = 1.0
+
+
+def default_models() -> List[BreachModel]:
+    """Default two-model ensemble: Froehlich (2008) and Froehlich (1995).
+
+    The 1995 regressions were fit to a smaller dataset (63 cases) with
+    different functional dependence on V_w and h_b; the 2008 update
+    revised both the data and the exponents.  Sampling across both
+    captures uncertainty about which generation of the regression is
+    appropriate for a given dam.
+    """
+    return [
+        BreachModel(
+            name="froehlich_2008",
+            b_avg_fn=froehlich.average_breach_width,
+            t_f_fn=lambda v, h, m: froehlich.formation_time(v, h),
+            side_slope_fn=froehlich.side_slope,
+            sigma_log_b_avg=0.1097,
+            sigma_log_t_f=0.1968,
+            weight=1.0,
+        ),
+        BreachModel(
+            name="froehlich_1995",
+            b_avg_fn=froehlich_1995.average_breach_width,
+            t_f_fn=lambda v, h, m: froehlich_1995.formation_time(v, h),
+            side_slope_fn=froehlich_1995.side_slope,
+            sigma_log_b_avg=0.137,
+            sigma_log_t_f=0.220,
+            weight=1.0,
+        ),
+    ]
+
+
 @dataclass
 class EnsembleHydrograph:
     """Monte Carlo ensemble of breach outflow hydrographs."""
@@ -58,6 +113,7 @@ class EnsembleHydrograph:
     flows_m3s: np.ndarray  # shape (n_samples, n_steps)
     sampled_b_avg_m: np.ndarray
     sampled_t_f_s: np.ndarray
+    sampled_model_index: Optional[np.ndarray] = None
 
     @property
     def n_samples(self) -> int:
@@ -190,4 +246,91 @@ def ensemble_simulate(
         flows_m3s=flows,
         sampled_b_avg_m=samples["bottom_width_m"],
         sampled_t_f_s=samples["formation_time_s"],
+    )
+
+
+def ensemble_simulate_multi_model(
+    storage: StorageCurve,
+    crest_elevation_m: float,
+    initial_stage_m: float,
+    volume_m3: float,
+    height_m: float,
+    mode: FailureMode,
+    n_samples: int,
+    *,
+    models: Optional[Sequence[BreachModel]] = None,
+    inflow_m3s: float = 0.0,
+    duration_s: Optional[float] = None,
+    dt_s: float = 1.0,
+    rng: Optional[np.random.Generator] = None,
+) -> EnsembleHydrograph:
+    """Multi-model Monte Carlo ensemble.
+
+    Each realization (1) picks one of the supplied ``models`` according
+    to its weight, (2) draws ``B_avg`` and ``t_f`` from that model's
+    log-normal residual distribution, and (3) routes the resulting
+    breach with :func:`swmm_breach.simulate`.
+
+    Captures both *parametric* uncertainty (within-model residuals,
+    after Wahl 2004) and *epistemic* uncertainty (which regression is
+    appropriate, sampled across the model mixture).
+    """
+    if models is None:
+        models = default_models()
+    if len(models) == 0:
+        raise ValueError("At least one model required")
+    rng = rng if rng is not None else np.random.default_rng()
+
+    weights = np.array([m.weight for m in models], dtype=float)
+    if np.any(weights < 0):
+        raise ValueError("Model weights must be non-negative")
+    weights = weights / weights.sum()
+
+    model_idx = rng.choice(len(models), size=n_samples, p=weights)
+    b_samples = np.empty(n_samples)
+    t_samples = np.empty(n_samples)
+    side_samples = np.empty(n_samples)
+
+    for i, mi in enumerate(model_idx):
+        m = models[mi]
+        b_central = m.b_avg_fn(volume_m3, height_m, mode)
+        t_central = m.t_f_fn(volume_m3, height_m, mode)
+        z_b = rng.normal(0.0, m.sigma_log_b_avg)
+        z_t = rng.normal(0.0, m.sigma_log_t_f)
+        b_samples[i] = b_central * 10.0 ** z_b
+        t_samples[i] = t_central * 10.0 ** z_t
+        side_samples[i] = m.side_slope_fn(mode)
+
+    if duration_s is None:
+        duration_s = max(float(t_samples.max()) * 4.0, 3600.0)
+
+    n_steps = int(duration_s / dt_s) + 1
+    flows = np.empty((n_samples, n_steps), dtype=float)
+
+    invert = crest_elevation_m - height_m
+    for i in range(n_samples):
+        geom = BreachGeometry(
+            bottom_width_m=float(b_samples[i]),
+            height_m=height_m,
+            side_slope_h_per_v=float(side_samples[i]),
+            formation_time_s=float(t_samples[i]),
+            invert_elevation_m=invert,
+        )
+        hg = simulate(
+            geometry=geom,
+            storage=storage,
+            crest_elevation_m=crest_elevation_m,
+            initial_stage_m=initial_stage_m,
+            inflow_m3s=inflow_m3s,
+            duration_s=duration_s,
+            dt_s=dt_s,
+        )
+        flows[i, : len(hg.outflow_m3s)] = hg.outflow_m3s
+
+    return EnsembleHydrograph(
+        time_s=np.arange(n_steps) * dt_s,
+        flows_m3s=flows,
+        sampled_b_avg_m=b_samples,
+        sampled_t_f_s=t_samples,
+        sampled_model_index=model_idx,
     )

@@ -1,6 +1,10 @@
 # swmm-breach
 
-Dam breach hydrograph generator for EPA SWMM and PCSWMM users.
+[![tests](https://github.com/mf4633/swmm-breach/actions/workflows/test.yml/badge.svg)](https://github.com/mf4633/swmm-breach/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
+Probabilistic dam-breach hydrograph forecasting for EPA SWMM and PCSWMM users.
 
 `swmm-breach` predicts embankment-dam breach geometry from published
 empirical regressions (Froehlich 2008) and routes the breach through a
@@ -11,12 +15,14 @@ back into SWMM as an `INFLOWS` time series.
 
 Alpha (0.4.0). Implemented:
 
-- Froehlich (2008) breach parameter regressions (`B_avg`, `t_f`) for
-  piping and overtopping failure modes
+- Froehlich (2008) and Froehlich (1995) breach parameter regressions
+  (`B_avg`, `t_f`) for piping and overtopping failure modes
 - Trapezoidal-breach broad-crested-weir outflow
 - Level-pool reservoir routing with linear breach growth
 - **Wahl (2004)-style Monte Carlo uncertainty propagation** with
   ensemble hydrographs and percentile envelopes
+- **Multi-model uncertainty**: ensemble can sample across both
+  parameter and model uncertainty (Froehlich 2008 vs. 1995)
 - SWMM 5.x `.inp` integration (pre-processing): parse `[STORAGE]`
   (TABULAR) + `[CURVES]`, emit pasteable `[TIMESERIES]` + `[INFLOWS]`
   blocks with CFS/CMS conversion
