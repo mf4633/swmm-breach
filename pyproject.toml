@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "swmm-breach"
-version = "0.2.0"
+version = "0.3.0"
 description = "Dam breach hydrograph generator for EPA SWMM and PCSWMM"
 readme = "README.md"
 requires-python = ">=3.9"

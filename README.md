@@ -9,14 +9,21 @@ back into SWMM as an `INFLOWS` time series.
 
 ## Status
 
-Alpha (0.2.0). Implemented:
+Alpha (0.3.0). Implemented:
 
 - Froehlich (2008) breach parameter regressions (`B_avg`, `t_f`) for
   piping and overtopping failure modes
 - Trapezoidal-breach broad-crested-weir outflow
 - Level-pool reservoir routing with linear breach growth
-- SWMM 5.x `.inp` integration: parse `[STORAGE]` (TABULAR) + `[CURVES]`,
-  emit pasteable `[TIMESERIES]` + `[INFLOWS]` blocks with CFS/CMS conversion
+- SWMM 5.x `.inp` integration (pre-processing): parse `[STORAGE]`
+  (TABULAR) + `[CURVES]`, emit pasteable `[TIMESERIES]` + `[INFLOWS]`
+  blocks with CFS/CMS conversion
+- SWMM 5.x `.out` integration (post-processing): read header, node and
+  link time series for the standard reporting variables
+
+> **Note:** the `.out` reader has been round-tripped against synthetic
+> fixtures generated to the documented SWMM 5 format spec. Validation
+> against an actual SWMM-engine-produced `.out` is pending.
 
 Planned:
 
@@ -97,6 +104,21 @@ print(format_inflows_block(
 ```
 
 Paste the printed snippet into the project's `.inp` and re-run SWMM.
+
+## Reading SWMM `.out` results
+
+After re-running SWMM with the breach inflow, pull the downstream
+response back out for inundation reporting:
+
+```python
+from swmm_breach.output import NodeVariable, LinkVariable, node_series, link_series
+
+t, depth = node_series("model.out", "DownstreamJN", NodeVariable.DEPTH)
+_, head  = node_series("model.out", "DownstreamJN", NodeVariable.HEAD)
+_, flow  = link_series("model.out", "Outfall_Pipe", LinkVariable.FLOW)
+
+print(f"Max downstream depth: {depth.max():.2f} m at t = {t[depth.argmax()]/60:.1f} min")
+```
 
 ## Validation
 
