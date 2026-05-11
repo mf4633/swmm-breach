@@ -1,0 +1,23 @@
+[TITLE]
+Minimal SWMM 5.x .inp fixture for swmm-breach round-trip tests.
+A single TABULAR storage node representing a Teton-scale reservoir.
+
+[OPTIONS]
+FLOW_UNITS           CMS
+INFILTRATION         HORTON
+FLOW_ROUTING         DYNWAVE
+
+[STORAGE]
+;;Name           Elev.    MaxDepth   InitDepth  Shape      Curve Name/Params            Fevap    Psi      Ksat     IMD
+;;-------------- -------- ---------- ----------- ---------- ---------------------------- -------- -------- -------- --------
+TetonRes         900.0    87.0       87.0        TABULAR    TetonStorage                 0        0
+
+[CURVES]
+;;Name           Type       X-Value    Y-Value
+;;-------------- ---------- ---------- ----------
+TetonStorage     STORAGE    0          0
+TetonStorage                20         12000000
+TetonStorage                40         60000000
+TetonStorage                60         160000000
+TetonStorage                80         290000000
+TetonStorage                87         308000000

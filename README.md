@@ -9,17 +9,19 @@ back into SWMM as an `INFLOWS` time series.
 
 ## Status
 
-Alpha (0.1.0). Implemented:
+Alpha (0.2.0). Implemented:
 
 - Froehlich (2008) breach parameter regressions (`B_avg`, `t_f`) for
   piping and overtopping failure modes
 - Trapezoidal-breach broad-crested-weir outflow
 - Level-pool reservoir routing with linear breach growth
+- SWMM 5.x `.inp` integration: parse `[STORAGE]` (TABULAR) + `[CURVES]`,
+  emit pasteable `[TIMESERIES]` + `[INFLOWS]` blocks with CFS/CMS conversion
 
 Planned:
 
 - Xu-Zhang (2009), MacDonald-Langridge (1984), and NWS BREACH parameter sets
-- SWMM `.inp` storage-node parser and `INFLOWS` time-series writer
+- Functional storage shapes; pyswmm/swmm-toolkit interop
 - Muskingum routing for downstream channel attenuation
 - Inundation envelope (normal-depth or simplified 2D)
 
@@ -62,6 +64,39 @@ hg = simulate(
 print(f"Peak outflow:  {hg.peak_outflow_m3s:,.0f} m^3/s")
 print(f"Time to peak:  {hg.time_to_peak_s/60:.1f} min")
 ```
+
+## SWMM round-trip
+
+```python
+from datetime import datetime
+from swmm_breach import FailureMode, froehlich, simulate
+from swmm_breach.swmm import load_storage_curve, format_inflows_block
+
+# 1. Pull a storage curve straight out of an existing .inp
+sc, node = load_storage_curve("model.inp", "TetonRes")
+crest = node.invert_elevation + node.max_depth
+
+# 2. Predict breach geometry and route the breach
+geom = froehlich.predict(
+    volume_m3=sc.volume_at(crest),
+    height_m=node.max_depth,
+    crest_elevation_m=crest,
+    mode=FailureMode.PIPING,
+)
+hg = simulate(geom, sc, crest, initial_stage_m=crest, dt_s=10.0,
+              duration_s=4*3600)
+
+# 3. Emit a SWMM-pasteable inflow block for the downstream node
+print(format_inflows_block(
+    hg, node_name="DownstreamOutfall",
+    timeseries_name="TS_TetonBreach",
+    start_datetime=datetime(2026, 6, 5, 14, 0),
+    units="CMS",  # or "CFS" if FLOW_UNITS in [OPTIONS] is CFS
+    decimate=6,    # write every minute when dt_s=10
+))
+```
+
+Paste the printed snippet into the project's `.inp` and re-run SWMM.
 
 ## Validation
 
