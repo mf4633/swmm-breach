@@ -112,14 +112,23 @@ typical of empirical breach regressions: predicted average bottom
 width 168 m vs. observed 151 m; predicted formation time 1.13 hr vs.
 observed 1.25 hr.
 
-A 2,000-realization probabilistic ensemble of the same Teton scenario
-brackets the historically reported peak discharge of approximately
-50,000-80,000 m$^3$/s within its 5-95 percentile envelope (5th
-percentile 62,800 m$^3$/s, 95th percentile 183,000 m$^3$/s). The
-deterministic point-estimate routing yields a peak of 119,000 m$^3$/s
--- approximately 80 % above the observed peak -- illustrating
-concretely the @wahl2004 finding that single-value breach predictions
-are systematically misleading at large reservoir scale.
+A 2,000-realization multi-model probabilistic ensemble (Froehlich
+2008 + Froehlich 1995, equal weights) brackets the historically
+reported peak discharge of approximately 50,000-80,000 m$^3$/s within
+its 5-95 percentile envelope (5th percentile 53,000 m$^3$/s, 95th
+percentile 186,000 m$^3$/s; \autoref{fig:teton}). The deterministic
+single-model point estimate yields a peak of 119,000 m$^3$/s --
+approximately 80 % above the observed peak -- illustrating concretely
+the @wahl2004 finding that single-value breach predictions are
+systematically misleading at large reservoir scale.
+
+![Multi-model probabilistic ensemble (n=2,000) for the 1976 Teton Dam
+piping breach. The dark line is the per-time-step median; the shaded
+band is the 5-95 percentile envelope; thin gray lines are 30 randomly
+sampled individual realizations; the red horizontal band shows the
+historically reported peak discharge of 50,000-80,000 m$^3$/s. The
+ensemble envelope brackets the observed range across the entire
+discharge dimension. \label{fig:teton}](teton_ensemble.png)
 
 ## Anson County WTP Lower Lagoon (ANSON-057), 78,940 m^3
 
@@ -133,15 +142,12 @@ volume 78,940 m$^3$); parameters were extracted from the 2023
 post-rehabilitation as-built survey.
 
 For the Lower-piping-at-normal-pool scenario, the HEC-RAS reference
-peak breach outflow is 121.8 m$^3$/s (4,301 cfs). `swmm-breach` returns:
-
-- Deterministic point estimate: 142.5 m$^3$/s (5,034 cfs), 17 % high
-- Probabilistic 5/50/95 percentiles: 77.0 / 140.5 / 219.5 m$^3$/s
-  (2,719 / 4,963 / 7,753 cfs)
-
-The HEC-RAS reference lies within the 5-95 percentile envelope; the
-ensemble median is within a factor of 1.15 of HEC-RAS, well inside
-the factor-of-two tolerance commonly used for breach-model agreement.
+peak breach outflow is 121.8 m$^3$/s (4,301 cfs). The 2,000-
+realization multi-model ensemble returns 5/50/95 percentile peaks of
+82 / 148 / 235 m$^3$/s (2,896 / 5,228 / 8,300 cfs); the HEC-RAS
+reference lies within the envelope and the ensemble median is within
+a factor of 1.21 of HEC-RAS, well inside the factor-of-two tolerance
+commonly used for breach-model agreement.
 
 ## Lawn Lake Dam (1982), 798,500 m^3
 
@@ -161,9 +167,9 @@ lies inside the envelope.
 
 | Case        | Volume (m$^3$) | Reference peak (m$^3$/s) | Ensemble 5/50/95 (m$^3$/s) | In envelope |
 |-------------|---------------:|-------------------------:|----------------------------:|:-----------:|
-| Anson Lower |    7.9 $\times$ 10$^4$ | 122 (HEC-RAS 2D) | 77 / 141 / 220       | yes |
-| Lawn Lake   |    8.0 $\times$ 10$^5$ | 510 (Jarrett 1986) | 202 / 344 / 539    | yes |
-| Teton       |    3.1 $\times$ 10$^8$ | 50,000-80,000 (observed) | 62,800 / 117,000 / 183,000 | yes |
+| Anson Lower |    7.9 $\times$ 10$^4$ | 122 (HEC-RAS 2D) |  82 / 148 / 235  | yes |
+| Lawn Lake   |    8.0 $\times$ 10$^5$ | 510 (Jarrett 1986) | 202 / 344 / 539 | yes |
+| Teton       |    3.1 $\times$ 10$^8$ | 50,000-80,000 (observed) | 53,000 / 108,000 / 186,000 | yes |
 
 Together the three cases demonstrate that the probabilistic ensemble
 brackets the reference peak across nearly four orders of magnitude in

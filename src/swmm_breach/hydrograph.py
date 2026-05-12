@@ -27,6 +27,28 @@ class Hydrograph:
     def time_to_peak_s(self) -> float:
         return float(self.time_s[int(np.argmax(self.outflow_m3s))])
 
+    def plot(self, ax=None, **kwargs):
+        """Plot the breach outflow hydrograph.
+
+        Returns the matplotlib ``Axes`` so the caller can add
+        annotations, legends, or save the figure.  Requires the
+        optional ``viz`` extra: ``pip install swmm-breach[viz]``.
+        """
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError as e:
+            raise ImportError(
+                "matplotlib is required for plotting; "
+                "install with `pip install swmm-breach[viz]`"
+            ) from e
+        if ax is None:
+            _, ax = plt.subplots(figsize=(8, 4))
+        ax.plot(self.time_s / 60.0, self.outflow_m3s, **kwargs)
+        ax.set_xlabel("Time (min)")
+        ax.set_ylabel("Breach outflow (m$^3$/s)")
+        ax.grid(True, alpha=0.3)
+        return ax
+
 
 def simulate(
     geometry: BreachGeometry,

@@ -142,6 +142,57 @@ class EnsembleHydrograph:
         """Percentile of the per-realization peak distribution."""
         return float(np.percentile(self.peak_flows_m3s, p))
 
+    def plot_envelope(
+        self,
+        ax=None,
+        low_pct: float = 5.0,
+        high_pct: float = 95.0,
+        show_realizations: bool = False,
+        n_realizations: int = 20,
+        rng: Optional[np.random.Generator] = None,
+        envelope_color: str = "steelblue",
+        median_color: str = "navy",
+    ):
+        """Plot the ensemble envelope: median line + low/high percentile band.
+
+        Optionally overlay a random subset of individual realizations
+        as thin lines.  Returns the matplotlib ``Axes``.
+
+        Requires the optional ``viz`` extra: ``pip install swmm-breach[viz]``.
+        """
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError as e:
+            raise ImportError(
+                "matplotlib is required for plotting; "
+                "install with `pip install swmm-breach[viz]`"
+            ) from e
+        if ax is None:
+            _, ax = plt.subplots(figsize=(8, 4))
+
+        t_min = self.time_s / 60.0
+        low, med, high = self.envelope(low_pct=low_pct, high_pct=high_pct)
+
+        ax.fill_between(
+            t_min, low, high, alpha=0.25, color=envelope_color,
+            label=f"{int(low_pct)}-{int(high_pct)}% envelope",
+        )
+        ax.plot(t_min, med, color=median_color, linewidth=2.0, label="median")
+
+        if show_realizations:
+            rng = rng if rng is not None else np.random.default_rng(0)
+            n = min(n_realizations, self.n_samples)
+            idx = rng.choice(self.n_samples, size=n, replace=False)
+            for i in idx:
+                ax.plot(t_min, self.flows_m3s[i], color="gray",
+                        alpha=0.3, linewidth=0.5)
+
+        ax.set_xlabel("Time (min)")
+        ax.set_ylabel("Breach outflow (m$^3$/s)")
+        ax.grid(True, alpha=0.3)
+        ax.legend(loc="upper right")
+        return ax
+
 
 def sample_breach_parameters(
     volume_m3: float,

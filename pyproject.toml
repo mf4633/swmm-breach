@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "swmm-breach"
-version = "0.6.0"
+version = "0.7.0"
 description = "Dam breach hydrograph generator for EPA SWMM and PCSWMM"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -27,6 +27,8 @@ dependencies = ["numpy>=1.20"]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+viz = ["matplotlib>=3.5"]
+all = ["pytest>=7", "matplotlib>=3.5"]
 
 [project.urls]
 Homepage = "https://github.com/mf4633/swmm-breach"

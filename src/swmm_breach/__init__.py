@@ -5,7 +5,7 @@ from . import froehlich, froehlich_1995, output, swmm, uncertainty
 from .reservoir import StorageCurve, trapezoidal_breach_outflow
 from .hydrograph import Hydrograph, simulate
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "BreachGeometry",

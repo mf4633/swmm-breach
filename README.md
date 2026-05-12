@@ -148,10 +148,22 @@ print(f"5/50/95 peak Q: "
       f"{ens.peak_percentile(95):,.0f} m^3/s")
 ```
 
-For the Teton Dam scenario above, the 5-95 envelope (62,800-183,000
-m^3/s) brackets the historically reported peak of approximately
-50,000-80,000 m^3/s, while a single deterministic point estimate
-(119,000 m^3/s) overshoots the observed range by ~80 %.
+For the Teton Dam scenario above, the multi-model 5-95 envelope
+(53,000-186,000 m^3/s) brackets the historically reported peak of
+approximately 50,000-80,000 m^3/s, while a single deterministic point
+estimate (119,000 m^3/s) overshoots the observed range by ~80 %.
+
+To plot the ensemble envelope, install with the `viz` extra:
+
+```bash
+pip install -e ".[viz]"
+```
+
+```python
+import matplotlib.pyplot as plt
+ax = ens.plot_envelope(show_realizations=True, n_realizations=20)
+plt.show()
+```
 
 ## Reading SWMM `.out` results
 
