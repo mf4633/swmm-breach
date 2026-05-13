@@ -195,7 +195,7 @@ The validation results demonstrate that the probabilistic 5–95 percentile enve
 - **Documentation:** README in the repository; runnable examples in `examples/`
 - **Continuous integration:** GitHub Actions workflow tests the package on Linux, macOS, and Windows across Python 3.9–3.12 on every commit and pull request
 
-A persistent archived release of the version described in this paper (v0.7.0) is deposited at Zenodo and assigned a DOI [pending — to be added on resubmission acceptance].
+A persistent archived release of the version described in this paper (v0.7.0) is deposited at Zenodo (version DOI: [10.5281/zenodo.20172074](https://doi.org/10.5281/zenodo.20172074); version-agnostic concept DOI: [10.5281/zenodo.20172073](https://doi.org/10.5281/zenodo.20172073)).
 
 ## CRediT author contributions
 

@@ -20,7 +20,7 @@ I believe this work is well-aligned with *Environmental Modelling & Software*'s 
 
 The manuscript is original, has not been published elsewhere, and is not under consideration by any other journal. No external funding was received for the development of `swmm-breach`. The author is employed as a Professional Engineer at McGill Associates, PA, which prepared the public-record Anson County hazard reclassification submittal cited as a validation case; this is disclosed in the manuscript's Funding and Conflict of Interest statement. McGill Associates had no role in the design, development, or analysis of the software described.
 
-Source code, test suite, and a permanent archived release (v0.7.0, Zenodo DOI to follow) are available at https://github.com/mf4633/swmm-breach. A preprint will be posted concurrently at EarthArXiv.
+Source code, test suite, and a permanent archived release (v0.7.0, Zenodo DOI [10.5281/zenodo.20172074](https://doi.org/10.5281/zenodo.20172074); concept DOI [10.5281/zenodo.20172073](https://doi.org/10.5281/zenodo.20172073)) are available at https://github.com/mf4633/swmm-breach. A preprint will be posted concurrently at EarthArXiv.
 
 I would suggest as potential reviewers Tony L. Wahl (U.S. Bureau of Reclamation; author of the foundational uncertainty paper that motivates this work) and David C. Froehlich (consultant; original author of the regressions implemented in the package). I have no personal or recent professional relationship with either. I have no reviewers to exclude.
 
