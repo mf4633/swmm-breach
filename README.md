@@ -3,6 +3,8 @@
 [![tests](https://github.com/mf4633/swmm-breach/actions/workflows/test.yml/badge.svg)](https://github.com/mf4633/swmm-breach/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20172073.svg)](https://doi.org/10.5281/zenodo.20172073)
+[![Preprint](https://img.shields.io/badge/preprint-EarthArXiv%2013032-orange.svg)](https://eartharxiv.org/repository/view/13032/)
 
 Probabilistic dam-breach hydrograph forecasting for EPA SWMM and PCSWMM users.
 
@@ -13,7 +15,7 @@ back into SWMM as an `INFLOWS` time series.
 
 ## Status
 
-Alpha (0.4.0). Implemented:
+v0.7.0. Implemented:
 
 - Froehlich (2008) and Froehlich (1995) breach parameter regressions
   (`B_avg`, `t_f`) for piping and overtopping failure modes
@@ -193,6 +195,42 @@ formulas:
 
 See `tests/test_froehlich.py` for the assertions, and
 `tests/test_hydrograph.py` for the end-to-end routing test.
+
+## Citing swmm-breach
+
+If you use `swmm-breach` in published or regulatory work, please cite the
+preprint and the archived release:
+
+> Flynn, M. B. (2026). *swmm-breach: Probabilistic dam-breach hydrograph
+> forecasting integrated with EPA SWMM and PCSWMM.* EarthArXiv preprint
+> 13032. https://eartharxiv.org/repository/view/13032/
+>
+> Flynn, M. B. (2026). *mf4633/swmm-breach: v0.7.0* (v0.7.0). Zenodo.
+> https://doi.org/10.5281/zenodo.20172074
+
+BibTeX:
+
+```bibtex
+@misc{flynn2026swmmbreach_preprint,
+  author = {Flynn, Michael B.},
+  title  = {swmm-breach: Probabilistic dam-breach hydrograph forecasting
+            integrated with EPA SWMM and PCSWMM},
+  year   = {2026},
+  doi    = {10.31223/X59V0T},
+  note   = {EarthArXiv preprint 13032},
+  url    = {https://eartharxiv.org/repository/view/13032/}
+}
+
+@software{flynn2026swmmbreach_code,
+  author    = {Flynn, Michael B.},
+  title     = {mf4633/swmm-breach: v0.7.0},
+  version   = {v0.7.0},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.20172074},
+  url       = {https://github.com/mf4633/swmm-breach}
+}
+```
 
 ## References
 
