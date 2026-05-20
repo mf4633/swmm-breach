@@ -143,7 +143,7 @@ The deterministic Froehlich (2008) point-estimate routing in `swmm-breach` repro
 
 A 2,000-realization multi-model ensemble of the same Teton scenario, however, returns 5/50/95 percentile peaks of 53,000 / 108,000 / 186,000 m³/s. The historically reported peak range of 50,000 to 80,000 m³/s lies within the 5-95 percentile envelope, with the 5th percentile coincident with the lower bound of the observed range (Figure 1). This is the key result of the validation: while the deterministic point estimate misses the observed peak by approximately 80 %, the probabilistic envelope brackets the observed range. The single-realization median is shifted high relative to observation, consistent with the structural over-prediction noted above, but the lower tail of the residual distribution captures the observed regime.
 
-![Probabilistic Teton Dam (1976) breach hydrograph: 2,000-realization multi-model ensemble (Froehlich 2008 + Froehlich 1995, equal weights). The dark line is the per-time-step median; the shaded blue band is the 5–95 percentile envelope; thin gray lines are 30 randomly sampled individual realizations; the red horizontal band shows the historically reported peak discharge of 50,000–80,000 m³/s. The ensemble envelope brackets the observed peak.](../teton_ensemble.png){#fig:teton width=85%}
+![](../teton_ensemble.png){width=85%}
 
 **Figure 1.** Probabilistic Teton Dam (1976) breach hydrograph: 2,000-realization multi-model ensemble (Froehlich 2008 + Froehlich 1995, equal weights). The dark line is the per-time-step median; the shaded blue band is the 5–95 percentile envelope; thin gray lines are 30 randomly sampled individual realizations; the red horizontal band shows the historically reported peak discharge of 50,000–80,000 m³/s. The ensemble envelope brackets the observed peak across the entire discharge dimension.
 
@@ -208,6 +208,10 @@ The author thanks the EPA SWMM development team for maintaining the SWMM source 
 ## Funding and conflict of interest
 
 No external funding was received for the development of `swmm-breach`. The author is employed as a Professional Engineer at McGill Associates, PA, which prepared the public-record Anson County hazard reclassification submittal cited as a validation case in this paper. McGill Associates had no role in the design, development, or analysis of this software; `swmm-breach` was developed independently outside the author's employment. The Anson submittal and its underlying parameters are public records under N.C. Gen. Stat. § 132-1.
+
+## Declaration of generative AI and AI-assisted technologies in the writing process
+
+During the preparation of this work, the author used Anthropic's Claude (Opus 4.7) to assist with drafting and editing of manuscript text. After using this tool, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.
 
 ## References
 

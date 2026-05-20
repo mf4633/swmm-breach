@@ -1,0 +1,84 @@
+site_name: swmm-breach
+site_description: Probabilistic dam-breach hydrograph forecasting for EPA SWMM and PCSWMM
+site_url: https://mf4633.github.io/swmm-breach/
+site_author: Michael B. Flynn
+repo_url: https://github.com/mf4633/swmm-breach
+repo_name: mf4633/swmm-breach
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            heading_level: 2
+            members_order: source
+            separate_signature: true
+
+markdown_extensions:
+  - admonition
+  - tables
+  - footnotes
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - User Guide: user-guide.md
+  - Tutorials:
+      - tutorials/index.md
+      - Anson Lower Lagoon (2026): tutorials/anson.md
+      - Lawn Lake Dam (1982): tutorials/lawn-lake.md
+      - Teton Dam (1976): tutorials/teton.md
+  - Theory: theory.md
+  - API Reference: api.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md
