@@ -5,14 +5,14 @@ All notable changes to `swmm-breach` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - 2026-05-27
 
 - MkDocs Material documentation site at `https://mf4633.github.io/swmm-breach/`
 - `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
 - Per-tutorial ensemble envelope figures (Anson, Lawn Lake, Teton)
 - Runnable EPA SWMM/PCSWMM example models in `examples/` (`teton_pcswmm_example.inp`, CMS/m; `anson_pcswmm_example.inp`, CFS/ft) plus the generators that build them; both verified clean in EPA SWMM 5.2.4 and PCSWMM Professional 2D
 - `.out` reader validated against real EPA SWMM 5.2.4 engine output (`tests/test_output_real_engine.py` + `tests/data/teton_real_engine.out`), removing the prior synthetic-fixture-only caveat
-- Consolidated the manuscript onto a single target venue — JWMM (`paper/jwmm/`); removed the EMS, SoftwareX, and JOSS drafts and the JOSS `paper.yml` workflow
+- JWMM manuscript (`paper/jwmm/`): applied reframe led by the Anson case, PCSWMM routing figure (`paper/anson_routing.pdf`), cover letter, and JWMM format checklist; EMS/SoftwareX/JOSS drafts and the JOSS `paper.yml` workflow removed
 
 ## [0.7.0] - 2026-05-11
 
