@@ -25,9 +25,9 @@ needs to be.
 
 Compatibility
 -------------
-Targets SWMM 5.1+ output.  The reader has been round-tripped against a
-synthetic fixture generated to the documented spec; validation against a
-real SWMM-engine-produced ``.out`` is pending (see README).
+Targets SWMM 5.1+ output.  The reader is round-tripped against synthetic
+fixtures (``tests/test_output.py``) and validated against a real EPA SWMM
+5.2.4 engine ``.out`` (``tests/test_output_real_engine.py``).
 """
 
 from __future__ import annotations
