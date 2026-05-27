@@ -1,26 +1,26 @@
 <!--
-JWMM working draft — Journal of Water Management Modeling (CHI).
-Adapted 2026-05-27 from the prior EMS/SoftwareX research-article draft.
-This is the only active target; the EMS, SoftwareX, and JOSS drafts were removed.
+JWMM working draft — Journal of Water Management Modeling (CHI). Adapted 2026-05-27.
+Single active target; EMS/SoftwareX/JOSS drafts removed. Remaining format gaps and
+status are tracked in JWMM_FORMAT_CHECKLIST.md (Word template, Chicago refs, MS
+Equation, full SI-primary sweep, figure fonts are the open items).
 
-Reframing checklist before submission (content is venue-agnostic; formatting is not):
-  - Apply the JWMM author template / house style (see chijournal.org author guidelines).
-  - Lead the abstract + intro with the applied Anson (ANSON-057) workflow — JWMM's
-    readership is practicing PCSWMM users, so foreground the practitioner gap.
-  - Add a worked PCSWMM figure built from examples/anson_pcswmm_example.inp
-    (cfs/feet) showing the breach hydrograph routed to the downstream outfall.
-  - Confirm citation/reference style matches JWMM.
+JWMM peer review is DOUBLE-ANONYMIZED. The body below is written without author
+identity; the title-page block immediately following is for the separate metadata
+upload / cover letter ONLY and must be OMITTED from the anonymized review copy.
+
+TITLE PAGE (separate upload — omit from anonymized review copy):
+  Michael B. Flynn  |  ORCID 0009-0004-2410-7950
+  Independent researcher, Asheville, NC 28801, USA  |  michaelbflynn@gmail.com
+  Funding: none.
+  COI: author is employed as a Professional Engineer at McGill Associates, PA,
+  which prepared the public-record Anson County hazard-reclassification submittal
+  cited as a validation case (§4.1); the software was developed independently
+  outside that employment. Full statement in the cover letter.
 -->
 
 # swmm-breach: Probabilistic dam-breach hydrograph forecasting integrated with EPA SWMM and PCSWMM
 
-**Michael B. Flynn**
-
-ORCID: 0009-0004-2410-7950
-
-Independent researcher, Asheville, NC 28801, USA
-
-Corresponding author: michaelbflynn@gmail.com
+*Authors and affiliations removed for double-anonymized review.*
 
 ---
 
@@ -137,9 +137,15 @@ The package follows a `src/` layout with a single top-level package `swmm_breach
 
 ### 4.1 Anson County WTP Lower Lagoon (ANSON-057)
 
-The Anson County Water Treatment Plant Lower Lagoon (state ID ANSON-057) is an HDPE-lined earthen embankment of approximately 25 ft (7.62 m) structural height retaining 64.0 ac-ft (78,940 m³) at normal pool elevation 458.89 ft NAVD88 and 111 ac-ft at the embankment crest of 463.5 ft NAVD88. A Class C (High Hazard) to Class A (Low Hazard) reclassification request was submitted to the North Carolina Department of Environmental Quality, Division of Energy, Mineral, and Land Resources (NCDEMLR) Land Quality Section in April 2026; the supporting analysis included a 2D unsteady-flow HEC-RAS 6.6 dam-breach inundation model that reported a peak breach outflow of 4,301 cfs (121.8 m³/s) for the Lower-piping-at-normal-pool scenario. The reclassification submittal and underlying as-built survey are public records under N.C. Gen. Stat. § 132-1.
+The Anson County Water Treatment Plant Lower Lagoon (state ID ANSON-057) is an HDPE-lined earthen embankment of approximately 7.62 m (25 ft) structural height retaining 78,940 m³ (64.0 ac-ft) at a normal pool elevation of 139.87 m (458.89 ft) NAVD88 and 136,900 m³ (111 ac-ft) at the embankment crest of 141.27 m (463.5 ft) NAVD88. A Class C (High Hazard) to Class A (Low Hazard) reclassification request was submitted to the North Carolina Department of Environmental Quality, Division of Energy, Mineral, and Land Resources (NCDEMLR) Land Quality Section in April 2026; the supporting analysis included a 2D unsteady-flow HEC-RAS 6.6 dam-breach inundation model that reported a peak breach outflow of 121.8 m³/s (4,301 cfs) for the Lower-piping-at-normal-pool scenario. The reclassification submittal and underlying as-built survey are public records under N.C. Gen. Stat. § 132-1.
 
 A 2,000-realization multi-model ensemble of the same scenario in `swmm-breach` returns 5/50/95 percentile peaks of 82 / 148 / 235 m³/s. The HEC-RAS reference peak of 121.8 m³/s lies within the 5-95 percentile envelope; the ensemble median is within a factor of 1.21 of the HEC-RAS reference, well inside the factor-of-two tolerance commonly used for breach-model agreement. The deterministic single-model Froehlich (2008) point estimate is 142.5 m³/s, approximately 17 % above the HEC-RAS reference.
+
+Beyond the breach peak, the package's distinctive value for practitioners is that the resulting hydrograph is routed inside the SWMM network itself rather than in a separate tool. Figure 1 shows the deterministic Froehlich (2008) breach for this scenario applied as a `[TIMESERIES]`/`[INFLOWS]` boundary condition at the dam toe in a complete EPA SWMM 5.2.4 model — distributed with the package as `examples/anson_pcswmm_example.inp` — and routed down a trapezoidal channel to a free outfall. The downstream flow-depth response, which is the quantity of interest for inundation mapping and Emergency Action Plan delineation, peaks shortly after and below the inflow as the wave attenuates through channel storage. The same `.inp` file opens and runs unchanged in PCSWMM Professional 2D.
+
+![](../anson_routing.png)
+
+**Figure 1.** Anson Lower Lagoon piping breach routed in EPA SWMM. Solid line: breach inflow hydrograph at the dam toe (deterministic Froehlich 2008). Dashed line: flow depth at the downstream junction. Dotted line: the HEC-RAS 6.6 2D reference peak of 121.8 m³/s (4,301 cfs). Generated by routing the package's `examples/anson_pcswmm_example.inp` through EPA SWMM 5.2.4; the same model opens and runs unchanged in PCSWMM Professional 2D.
 
 The relatively close agreement at lagoon scale reflects the comparatively simple physics of the Lower Lagoon failure: the embankment is small enough that level-pool dynamics dominate over headcut migration, the side slopes do not evolve dramatically over the breach formation time, and the broad-crested-weir representation of the developing breach is a defensible engineering approximation.
 
@@ -155,11 +161,11 @@ The Teton Dam failure of 5 June 1976 is the canonical large-scale embankment-dam
 
 The deterministic Froehlich (2008) point-estimate routing in `swmm-breach` reproduces the observed Teton breach geometry to within the 25 % accuracy typical of empirical regressions: predicted average bottom width 168 m versus observed 151 m; predicted formation time 1.13 hours versus observed 1.25 hours. However, when the Froehlich-derived geometry is routed through the package's level-pool model, the deterministic peak discharge is approximately 119,000 m³/s — roughly 83 % above the midpoint of the observed range. This over-prediction reflects two limitations of the present implementation: the assumption of broad-crested-weir hydraulics through the breach throat does not capture the orifice-like flow regime in the early stages of the Teton breach, and the linear breach-growth assumption does not represent the headcut-driven progressive widening that characterized the actual failure. A formal sensitivity decomposition apportioning the over-prediction between these two assumptions — by running the model with each assumption relaxed in turn — is planned for the package's v0.8 release, alongside the progressive-headcut breach model discussed in Section 5.2.
 
-A 2,000-realization multi-model ensemble of the same Teton scenario, however, returns 5/50/95 percentile peaks of 53,000 / 108,000 / 186,000 m³/s. The historically reported peak range of 50,000 to 80,000 m³/s lies within the 5-95 percentile envelope, with the 5th percentile coincident with the lower bound of the observed range (Figure 1). This is the key result of the validation: while the deterministic point estimate misses the observed peak by approximately 80 %, the probabilistic envelope brackets the observed range. The single-realization median is shifted high relative to observation, consistent with the structural over-prediction noted above, but the lower tail of the residual distribution captures the observed regime.
+A 2,000-realization multi-model ensemble of the same Teton scenario, however, returns 5/50/95 percentile peaks of 53,000 / 108,000 / 186,000 m³/s. The historically reported peak range of 50,000 to 80,000 m³/s lies within the 5-95 percentile envelope, with the 5th percentile coincident with the lower bound of the observed range (Figure 2). This is the key result of the validation: while the deterministic point estimate misses the observed peak by approximately 80 %, the probabilistic envelope brackets the observed range. The single-realization median is shifted high relative to observation, consistent with the structural over-prediction noted above, but the lower tail of the residual distribution captures the observed regime.
 
 ![](../teton_ensemble.png){width=85%}
 
-**Figure 1.** Probabilistic Teton Dam (1976) breach hydrograph: 2,000-realization multi-model ensemble (Froehlich 2008 + Froehlich 1995, equal weights). The dark line is the per-time-step median; the shaded blue band is the 5–95 percentile envelope; thin gray lines are 30 randomly sampled individual realizations; the red horizontal band shows the historically reported peak discharge of 50,000–80,000 m³/s. The ensemble envelope brackets the observed peak across the entire discharge dimension.
+**Figure 2.** Probabilistic Teton Dam (1976) breach hydrograph: 2,000-realization multi-model ensemble (Froehlich 2008 + Froehlich 1995, equal weights). The dark line is the per-time-step median; the shaded blue band is the 5–95 percentile envelope; thin gray lines are 30 randomly sampled individual realizations; the red horizontal band shows the historically reported peak discharge of 50,000–80,000 m³/s. The ensemble envelope brackets the observed peak across the entire discharge dimension.
 
 ### 4.4 Cross-case synthesis
 
@@ -196,7 +202,7 @@ The validation results demonstrate that the probabilistic 5–95 percentile enve
 ## Software and data availability
 
 - **Name:** swmm-breach
-- **Developer / contact:** Michael B. Flynn (michaelbflynn@gmail.com)
+- **Developer / contact:** *[removed for anonymized review — see title page]*
 - **Year first available:** 2026
 - **Hardware requirements:** None beyond a standard desktop/laptop
 - **Software requirements:** Python ≥ 3.9; NumPy ≥ 1.20; optional Matplotlib ≥ 3.5 for plotting helpers; optional pytest ≥ 7 for the test suite
@@ -209,19 +215,23 @@ The validation results demonstrate that the probabilistic 5–95 percentile enve
 - **Documentation:** README in the repository; runnable examples in `examples/`, including two complete EPA SWMM/PCSWMM `.inp` models (Teton in CMS/metres, Anson in CFS/feet) that route the generated breach hydrograph through a downstream channel to a free outfall
 - **Continuous integration:** GitHub Actions workflow tests the package on Linux, macOS, and Windows across Python 3.9–3.12 on every commit and pull request
 
-A persistent archived release of the version described in this paper (v0.7.0) is deposited at Zenodo (version DOI: [10.5281/zenodo.20172074](https://doi.org/10.5281/zenodo.20172074); version-agnostic concept DOI: [10.5281/zenodo.20172073](https://doi.org/10.5281/zenodo.20172073)).
+A persistent archived release of the version described in this paper (v0.8.0) is deposited at Zenodo under the version-agnostic concept DOI [10.5281/zenodo.20172073](https://doi.org/10.5281/zenodo.20172073), which resolves to the latest archived version.
+
+<!-- TITLE PAGE / SEPARATE METADATA — OMIT FROM ANONYMIZED REVIEW COPY:
 
 ## CRediT author contributions
 
 **Michael B. Flynn:** Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing - original draft, Writing - review & editing, Visualization, Project administration.
 
-## Acknowledgements
-
-The author thanks the EPA SWMM development team for maintaining the SWMM source code as open and public, which made the format-specification-driven implementation of the `.inp` and `.out` integration possible.
-
 ## Funding and conflict of interest
 
 No external funding was received for the development of `swmm-breach`. The author is employed as a Professional Engineer at McGill Associates, PA, which prepared the public-record Anson County hazard reclassification submittal cited as a validation case in this paper. McGill Associates had no role in the design, development, or analysis of this software; `swmm-breach` was developed independently outside the author's employment. The Anson submittal and its underlying parameters are public records under N.C. Gen. Stat. § 132-1.
+
+-->
+
+## Acknowledgements
+
+*[Acknowledgements removed for anonymized review.]* The author thanks the EPA SWMM development team for maintaining the SWMM source code as open and public, which made the format-specification-driven implementation of the `.inp` and `.out` integration possible.
 
 ## Declaration of generative AI and AI-assisted technologies in the writing process
 
