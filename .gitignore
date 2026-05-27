@@ -16,3 +16,13 @@ env/
 .DS_Store
 .idea/
 .vscode/
+
+# SWMM/PCSWMM run artifacts (regenerable from the .inp). The committed
+# real-engine fixture lives at tests/data/*.out and is NOT ignored.
+examples/*.out
+examples/*.rpt
+examples/*.chi
+examples/*.db
+examples/*.ini
+examples/*.~inp
+tests/data/*.rpt

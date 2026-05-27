@@ -29,11 +29,8 @@ v0.7.0. Implemented:
   (TABULAR) + `[CURVES]`, emit pasteable `[TIMESERIES]` + `[INFLOWS]`
   blocks with CFS/CMS conversion
 - SWMM 5.x `.out` integration (post-processing): read header, node and
-  link time series for the standard reporting variables
-
-> **Note:** the `.out` reader has been round-tripped against synthetic
-> fixtures generated to the documented SWMM 5 format spec. Validation
-> against an actual SWMM-engine-produced `.out` is pending.
+  link time series for the standard reporting variables, validated
+  against EPA SWMM 5.2.4 engine output (see below)
 
 Planned:
 
@@ -195,6 +192,15 @@ formulas:
 
 See `tests/test_froehlich.py` for the assertions, and
 `tests/test_hydrograph.py` for the end-to-end routing test.
+
+The `.out` binary reader is validated end-to-end against real engine
+output: `examples/build_teton_pcswmm.py` writes a complete, runnable
+`.inp` (breach hydrograph as `[INFLOWS]` routed down a trapezoidal
+channel to a free outfall), and `tests/test_output_real_engine.py`
+reads the EPA SWMM 5.2.4 `.out` produced from it, confirming the parsed
+node depths, link flows, and outfall mass balance match the engine's own
+`.rpt` summary. The same `.inp` opens and runs unchanged in PCSWMM
+Professional 2D.
 
 ## Citing swmm-breach
 

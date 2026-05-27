@@ -1,3 +1,17 @@
+<!--
+JWMM working draft — Journal of Water Management Modeling (CHI).
+Adapted 2026-05-27 from the prior EMS/SoftwareX research-article draft.
+This is the only active target; the EMS, SoftwareX, and JOSS drafts were removed.
+
+Reframing checklist before submission (content is venue-agnostic; formatting is not):
+  - Apply the JWMM author template / house style (see chijournal.org author guidelines).
+  - Lead the abstract + intro with the applied Anson (ANSON-057) workflow — JWMM's
+    readership is practicing PCSWMM users, so foreground the practitioner gap.
+  - Add a worked PCSWMM figure built from examples/anson_pcswmm_example.inp
+    (cfs/feet) showing the breach hydrograph routed to the downstream outfall.
+  - Confirm citation/reference style matches JWMM.
+-->
+
 # swmm-breach: Probabilistic dam-breach hydrograph forecasting integrated with EPA SWMM and PCSWMM
 
 **Michael B. Flynn**
@@ -103,11 +117,11 @@ After the breach hydrograph is computed, the package emits a paste-ready SWMM 5 
 
 ### 3.7 SWMM binary output post-processing
 
-To close the workflow loop, `swmm-breach` provides a binary reader for the SWMM `.out` file format (Rossman, 2017). The reader extracts the file header, the object identifier list, and per-reporting-period time series for any node or link reporting variable (depth, head, volume, lateral inflow, total inflow, flooding, link flow, link velocity, and so on). After re-running the SWMM project with the breach inflow pasted in, the reader retrieves downstream node depths and flows for inundation reporting. The reader is implemented from the documented format specification in the EPA SWMM 5 source code (`output.c`); like the input-file parser, it is verified against a synthetic fixture file generated independently from the same specification.
+To close the workflow loop, `swmm-breach` provides a binary reader for the SWMM `.out` file format (Rossman, 2017). The reader extracts the file header, the object identifier list, and per-reporting-period time series for any node or link reporting variable (depth, head, volume, lateral inflow, total inflow, flooding, link flow, link velocity, and so on). After re-running the SWMM project with the breach inflow pasted in, the reader retrieves downstream node depths and flows for inundation reporting. The reader is implemented from the documented format specification in the EPA SWMM 5 source code (`output.c`); like the input-file parser, it is verified against a synthetic fixture file generated independently from the same specification, and is additionally validated against a real `.out` file produced by the unmodified EPA SWMM 5.2.4 engine (the same engine embedded in PCSWMM Professional 2D), confirming that the parsed node depths, link flows, and outfall mass balance reproduce the engine's own report-file summary.
 
 ### 3.8 Software architecture and testing
 
-The package follows a `src/` layout with a single top-level package `swmm_breach` containing eight modules: `breach` (data structures), `froehlich`, `froehlich_1995`, `reservoir`, `hydrograph`, `swmm` (`.inp` integration), `output` (`.out` binary reader), and `uncertainty` (Monte Carlo and multi-model ensemble). The runtime dependency is NumPy; an optional `viz` extra adds Matplotlib for plotting helpers. The test suite contains 56 tests including: physical-correctness tests for each regression against Teton Dam observed parameters; round-trip tests for the SWMM `.inp` and `.out` parsers against synthetic fixtures generated from the format specifications; mass-balance tests for the routing integrator; statistical tests of the Monte Carlo sampler (geometric mean convergence, residual standard deviation recovery); and case-study regression tests for all three validation cases described in Section 4. Continuous integration is configured to run the full suite on Linux, macOS, and Windows across Python 3.9–3.12 on every commit and pull request to the public repository.
+The package follows a `src/` layout with a single top-level package `swmm_breach` containing eight modules: `breach` (data structures), `froehlich`, `froehlich_1995`, `reservoir`, `hydrograph`, `swmm` (`.inp` integration), `output` (`.out` binary reader), and `uncertainty` (Monte Carlo and multi-model ensemble). The runtime dependency is NumPy; an optional `viz` extra adds Matplotlib for plotting helpers. The test suite contains 61 tests including: physical-correctness tests for each regression against Teton Dam observed parameters; round-trip tests for the SWMM `.inp` and `.out` parsers against synthetic fixtures generated from the format specifications; validation of the `.out` reader against a real EPA SWMM 5.2.4 engine output file; mass-balance tests for the routing integrator; statistical tests of the Monte Carlo sampler (geometric mean convergence, residual standard deviation recovery); and case-study regression tests for all three validation cases described in Section 4. Continuous integration is configured to run the full suite on Linux, macOS, and Windows across Python 3.9–3.12 on every commit and pull request to the public repository.
 
 ## 4. Validation
 
@@ -187,12 +201,12 @@ The validation results demonstrate that the probabilistic 5–95 percentile enve
 - **Hardware requirements:** None beyond a standard desktop/laptop
 - **Software requirements:** Python ≥ 3.9; NumPy ≥ 1.20; optional Matplotlib ≥ 3.5 for plotting helpers; optional pytest ≥ 7 for the test suite
 - **Programming language:** Python
-- **Program size:** Approximately 1,250 source lines of code across eight modules; approximately 1,100 lines of test code in ten test modules
+- **Program size:** Approximately 1,250 source lines of code across eight modules; approximately 1,100 lines of test code in eleven test modules
 - **Availability:** Public GitHub repository at https://github.com/mf4633/swmm-breach (MIT License); pip-installable from source with `pip install -e .`
 - **Cost:** Free
 - **License:** MIT
 - **Issue tracker:** https://github.com/mf4633/swmm-breach/issues
-- **Documentation:** README in the repository; runnable examples in `examples/`
+- **Documentation:** README in the repository; runnable examples in `examples/`, including two complete EPA SWMM/PCSWMM `.inp` models (Teton in CMS/metres, Anson in CFS/feet) that route the generated breach hydrograph through a downstream channel to a free outfall
 - **Continuous integration:** GitHub Actions workflow tests the package on Linux, macOS, and Windows across Python 3.9–3.12 on every commit and pull request
 
 A persistent archived release of the version described in this paper (v0.7.0) is deposited at Zenodo (version DOI: [10.5281/zenodo.20172074](https://doi.org/10.5281/zenodo.20172074); version-agnostic concept DOI: [10.5281/zenodo.20172073](https://doi.org/10.5281/zenodo.20172073)).
