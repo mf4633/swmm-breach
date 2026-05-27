@@ -2,7 +2,8 @@
 
 This page collects the equations and the methodological assumptions
 behind `swmm-breach` in one place. Full citations are in the
-[changelog and references](changelog.md) and in `paper/paper.bib`.
+[changelog and references](changelog.md) and in the manuscript
+References section at `paper/jwmm/manuscript.md`.
 
 ## Breach parameter regressions
 

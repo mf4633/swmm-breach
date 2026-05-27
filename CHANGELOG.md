@@ -10,6 +10,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - MkDocs Material documentation site at `https://mf4633.github.io/swmm-breach/`
 - `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
 - Per-tutorial ensemble envelope figures (Anson, Lawn Lake, Teton)
+- Runnable EPA SWMM/PCSWMM example models in `examples/` (`teton_pcswmm_example.inp`, CMS/m; `anson_pcswmm_example.inp`, CFS/ft) plus the generators that build them; both verified clean in EPA SWMM 5.2.4 and PCSWMM Professional 2D
+- `.out` reader validated against real EPA SWMM 5.2.4 engine output (`tests/test_output_real_engine.py` + `tests/data/teton_real_engine.out`), removing the prior synthetic-fixture-only caveat
+- Consolidated the manuscript onto a single target venue — JWMM (`paper/jwmm/`); removed the EMS, SoftwareX, and JOSS drafts and the JOSS `paper.yml` workflow
 
 ## [0.7.0] - 2026-05-11
 
