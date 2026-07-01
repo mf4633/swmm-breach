@@ -26,3 +26,7 @@ examples/*.db
 examples/*.ini
 examples/*.~inp
 tests/data/*.rpt
+
+# Word lock files
+paper/jwmm/~$*
+**/~$*.docx
