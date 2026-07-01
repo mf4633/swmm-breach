@@ -238,6 +238,18 @@ BibTeX:
 }
 ```
 
+## Related tools (open core + pro)
+
+| Tool | Role |
+|------|------|
+| [PE-Calc Dam Safety](https://pe-calc.com/dam-safety.html) | Free screening calculators: breach peak discharge (Froehlich/Xu-Zhang), hazard class, IDF |
+| [PE-Calc Dam Breach](https://pe-calc.com/tools/dam-breach.html) | Quick Q<sub>p</sub> sanity check before full `swmm-breach` routing |
+| [FieldHydro AR](https://pe-calc.com/field/) | Field verification + georeferenced inundation overlays for EAP exhibits |
+| [hydro-tools](https://github.com/mf4633/hydro-tools) | Open Manning/HGL/Rational primitives mirrored in JS and Rust |
+| [HydroComplete](https://hydrocomplete.com/) | Full stormwater modeling with provenance export (pro) |
+
+`swmm-breach` produces the hydrograph; PE-Calc screens breach parameters; FieldHydro ties field marks to modeled inundation for defensible EAP updates.
+
 ## References
 
 - Froehlich, D. C. (2008). "Embankment Dam Breach Parameters and Their
